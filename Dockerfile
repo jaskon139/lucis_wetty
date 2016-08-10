@@ -1,10 +1,27 @@
 ####
 # Builds the lucida base image
-FROM jaskon139/sirius
+FROM jaskon139/sirius2
 
-WORKDIR "/usr/local/lucida/lucida"
-RUN /usr/bin/make
-RUN /bin/bash commandcenter/apache/install_apache.sh
+ADD . /app
+WORKDIR /app
+RUN apt-get update
+RUN apt-get install -y vim
+RUN apt-get install -y git
+RUN apt-get install -y nodejs
+RUN apt-get install -y npm
+
+RUN git clone https://github.com/krishnasrinivas/wetty
+RUN cd wetty 
+RUN npm install 
+
+RUN useradd -d /home/term -m -s /bin/bash term
+RUN echo 'term:term' | chpasswd
+
+EXPOSE 3000
+
+ENTRYPOINT ["node"]
+CMD ["app.js", "-p", "3000"]
+
 
 
 ### function docker-flush(){
